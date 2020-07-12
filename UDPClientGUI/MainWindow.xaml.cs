@@ -48,7 +48,8 @@ namespace UDPCommGUI
 
         private void Connect(object sender, RoutedEventArgs e)
         {
-            client.Connect(client.ConnectionIP, client.ConnectionPort);
+            client.Connect();
+            ChangeStatus();
         }
 
         private void MessageChanged(object sender, TextChangedEventArgs e)
@@ -63,7 +64,29 @@ namespace UDPCommGUI
 
         private void DisConnectClicked(object sender, RoutedEventArgs e)
         {
-            client.Close();
+            client.Disconnect();
+            ChangeStatus();
         }
+
+        private void ChangeStatus()
+        {
+            if (client.ConnectionStatus)
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    ConStatus.Text="Connected";
+                    ConStatus.Foreground = new SolidColorBrush(Colors.Green); ;
+                });
+            }
+            else
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    ConStatus.Text = "Disconnected";
+                    ConStatus.Foreground = new SolidColorBrush(Colors.Red);
+                });
+            }
+        }
+
     }
 }

@@ -7,46 +7,47 @@ using System.Threading.Tasks;
 
 namespace UDPCommGUI
 {
-    class MyUDPClient : UdpClient, IClientInterface
+    class MyUDPClient : IClientInterface
     {
 
-        private string connectionIP;
-        private int connectionPort;
-        private string inputMessage;
-
-
-        public string ConnectionIP
+        private UdpClient client;
+    
+        public MyUDPClient()
         {
-            get { return connectionIP; }
-            set { connectionIP = value; }
+            this.ConnectionStatus = false;
         }
 
-        public int ConnectionPort
-        {
-            get { return connectionPort; }
-            set { connectionPort = value; }
-        }
+        public string ConnectionIP { get; set; }
 
-        public string InputMessage
-        {
-            get { return inputMessage; }
-            set { inputMessage = value; }
-        }
+        public int ConnectionPort { get; set; }
 
+        public string InputMessage{ get; set; }
+
+        public bool ConnectionStatus { get; set; }
+                
         public void Connect()
         {
-            this.Connect(ConnectionIP, ConnectionPort);
+            this.client = new UdpClient();
+            client.Connect(ConnectionIP, ConnectionPort);
+            this.ConnectionStatus = true;
         }
 
-        public void DisplayInfo()
+        public void Disconnect()
         {
-            //
+            if(ConnectionStatus)
+            {
+                client.Close();
+                this.ConnectionStatus = false;
+            }
         }
 
         public void SendMessage()
         {
-            byte[] message = Encoding.ASCII.GetBytes(InputMessage);
-            this.Send(message, message.Length);
+            if(ConnectionStatus)
+            {
+                byte[] message = Encoding.ASCII.GetBytes(InputMessage);
+                client.Send(message, message.Length);
+            }            
         }
     }
 }

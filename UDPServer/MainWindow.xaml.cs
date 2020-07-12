@@ -28,6 +28,8 @@ namespace UDPServer
         public MainWindow()
         {
             InitializeComponent();
+            ListBox1.ItemsSource = server.MessageReceived;
+            this.DataContext = server;
         }
 
         private void IPChanged(object sender, TextChangedEventArgs e)
@@ -42,27 +44,65 @@ namespace UDPServer
 
         private void ConnectButtonClicked(object sender, RoutedEventArgs e)
         {
-            server.Connect();
-            listeningThread = new Thread(new ThreadStart(GetData));
-            listeningThread.Start();
+            if(!server.ConnectionStatus)
+            {
+                server.Connect();
+                listeningThread = new Thread(new ThreadStart(GetData));
+                listeningThread.Start();
+                this.ChangeStatus();
+            }            
         }
 
         private void GetData()
         {
-            while(true)
+            while (true)
             {
-                server.GetData();
-                this.Dispatcher.Invoke(() =>
+                if(server.DataAvailable != 0)
                 {
-                    ListBox1.Items.Add(server.ReceivedData);
-                });
-
+                    this.Dispatcher.Invoke(async () =>
+                    {
+                        await server.GetData();
+                    });
+                }
             }
         }
 
         private void DisconnectButtonClicked(object sender, RoutedEventArgs e)
         {
-            listeningThread.Abort();
+            if(server.ConnectionStatus)
+            {
+                listeningThread.Abort();
+                server.Disconnect();
+                this.ChangeStatus();
+            }            
+        }
+
+        private void ChangeStatus()
+        {
+            if (server.ConnectionStatus)
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    ListeningStatus.Text = "Listening";
+                    ListeningStatus.Foreground = new SolidColorBrush(Colors.Green); ;
+                });
+            }
+            else
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    ListeningStatus.Text = "Stoped";
+                    ListeningStatus.Foreground = new SolidColorBrush(Colors.Red);
+                });
+            }
+        }
+
+        private void ClearButtonClicked(object sender, RoutedEventArgs e)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                server.ClearMessage();
+            });
         }
     }
 }

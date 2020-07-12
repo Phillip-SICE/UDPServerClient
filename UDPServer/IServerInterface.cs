@@ -8,29 +8,17 @@ namespace UDPServer
 {
     interface IServerInterface
     {
-        string ConnectionIP
-        {
-            get;
-            set;
-        }
+        string ConnectionIP { get; set; }
 
-        int ConnectionPort
-        {
-            get;
-            set;
-        }
+        int ConnectionPort { get; set; }
 
-        string ReceivedData
-        {
-            get;
-            set;
-        }
+        string ReceivedData { get; set; }
 
         void Connect();
 
-        void GetData();
+        void Disconnect();
 
-        void DisplayData();
+        //Task GetData();
         
     }
 }

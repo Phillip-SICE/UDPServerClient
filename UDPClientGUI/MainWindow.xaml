@@ -5,14 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UDPCommGUI"
         mc:Ignorable="d"
-        Title="UDP client" Height="320.168" Width="541.596">
+        Title="UDP client" Height="320" Width="540">
     <Grid Margin="0,0,2,-5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="49*"/>
             <ColumnDefinition Width="15*"/>
             <ColumnDefinition Width="468*"/>
         </Grid.ColumnDefinitions>
-        <TextBox x:Name="IPbox" HorizontalAlignment="Left" Height="43" Margin="84.933,23,0,0" TextWrapping="Wrap" Text="0.0.0.0" VerticalAlignment="Top" Width="161" Grid.Column="2" TextChanged="IPChanged"/>
+        <TextBox x:Name="IPbox" HorizontalAlignment="Left" Height="43" Margin="84.933,23,0,0" TextWrapping="Wrap" Text="127.0.0.1" VerticalAlignment="Top" Width="161" Grid.Column="2" TextChanged="IPChanged"/>
         <Button Content="Connect" HorizontalAlignment="Left" Height="43" Margin="273.933,73,0,0" VerticalAlignment="Top" Width="117" Grid.Column="2" Click="Connect"/>
         <Label Content="IP" HorizontalAlignment="Left" Margin="13.933,32,0,0" VerticalAlignment="Top" Grid.Column="2"/>
         <Label Content="Port&#xD;&#xA;" HorizontalAlignment="Left" Margin="13.933,87,0,0" VerticalAlignment="Top" Grid.Column="2"/>
@@ -21,6 +21,7 @@
         <Label Content="Message&#xA;" HorizontalAlignment="Left" Margin="13.933,190,0,0" VerticalAlignment="Top" Grid.Column="2"/>
         <Button Content="Send" HorizontalAlignment="Left" Height="43" Margin="273.933,189,0,0" VerticalAlignment="Top" Width="117" Grid.Column="2" Click="SendButtonClicked"/>
         <Button Content="Disconnect" HorizontalAlignment="Left" Height="43" Margin="274,131,0,0" VerticalAlignment="Top" Width="117" Grid.Column="2" Click="DisConnectClicked" RenderTransformOrigin="0.535,1.6"/>
+        <TextBlock Name="ConStatus" Foreground="Red" Grid.Column="2" HorizontalAlignment="Left" Margin="319,32,0,0" TextWrapping="Wrap" Text="Disconencted" VerticalAlignment="Top"/>
 
 
     </Grid>

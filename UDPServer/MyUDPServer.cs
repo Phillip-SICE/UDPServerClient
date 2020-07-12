@@ -1,76 +1,87 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace UDPServer
 {
-    class MyUDPServer : IServerInterface
+    class MyUDPServer : IServerInterface, INotifyPropertyChanged
     {
         private UdpClient client;
-        private string connectionIP;
-        private int connectionPort;
-        private string receivedData;
+
+        private int currentPort;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public MyUDPServer()
         {
-
+            this.ConnectionStatus = false;
+            this.MessageReceived = new ObservableCollection<string>();
+            this.MessageReceivedNumber = 0;
+            this.currentPort = -1;
         }
 
+        public string ConnectionIP { get; set; }
 
+        public int ConnectionPort { get; set; }
 
-        public string ConnectionIP
+        public string ReceivedData { get; set; }
+
+        public bool ConnectionStatus { get; set; }
+
+        public ObservableCollection<string> MessageReceived { get; set; }
+
+        public int MessageReceivedNumber { get; set; }
+
+        public int DataAvailable
         {
-            get { return connectionIP; }
-            set { connectionIP = value; }
+            get { return client.Available; }
         }
-
-        public int ConnectionPort
-        {
-            get { return connectionPort; }
-            set { connectionPort = value; }
-        }
-
-        public string ReceivedData
-        {
-            get { return receivedData; }
-            set { receivedData = value; }
-        }
-
+        
         public void Connect()
         {
-            client = new UdpClient(ConnectionPort);
-        }
-
-        public void GetData()
-        {
-            // IPEndPoint remoteIpEndPoint = new IPEndPoint(IPtoLong(ConnectionIP), ConnectionPort);
-            IPEndPoint remoteIpEndPoint = new IPEndPoint(IPAddress.Any, ConnectionPort);
-            byte[] data = client.Receive(ref remoteIpEndPoint);
-            ReceivedData = Encoding.ASCII.GetString(data);
-        }
-
-        public void DisplayData()
-        {
-            //
-        }
-
-        long IPtoLong(string IP)
-        {
-            string[] IPs = IP.Split('.');
-            long result = 0;
-            int i = 24;
-            foreach(string s in IPs)
+            if(!ConnectionStatus)
             {
-                result += long.Parse(s) * 2 ^ i;
-                i -= 8;
+                client = new UdpClient(ConnectionPort);
+                currentPort = ConnectionPort;
+                this.ConnectionStatus = true;
             }
-
-            return result;
         }
 
+        public void Disconnect()
+        {
+            if(ConnectionStatus)
+            {
+                client.Close();
+                this.ConnectionStatus = false;
+            }
+        }
+
+        public async Task GetData()
+        {
+            IPEndPoint remoteIpEndPoint = new IPEndPoint(IPAddress.Parse(ConnectionIP), ConnectionPort);
+            //byte[] data = client.Receive(ref remoteIpEndPoint);
+            var data = await client.ReceiveAsync();
+            ReceivedData = Encoding.ASCII.GetString(data.Buffer);
+            this.MessageReceivedNumber++;
+            this.MessageReceived.Add(this.MessageReceivedNumber.ToString() + ". " + ReceivedData);
+        }
+
+        public void ClearMessage()
+        {
+            this.MessageReceived.Clear();
+            this.MessageReceivedNumber = 0;
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
     }
 }

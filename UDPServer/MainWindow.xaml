@@ -10,11 +10,12 @@
         <Label Content="IP" HorizontalAlignment="Left" Margin="30,25,0,0" VerticalAlignment="Top"/>
         <Label Content="Port" HorizontalAlignment="Left" Margin="30,79,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="IPBox" HorizontalAlignment="Left" Height="26" Margin="89,25,0,0" TextWrapping="Wrap" Text="0.0.0.0" VerticalAlignment="Top" Width="145" TextChanged="IPChanged"/>
-        <TextBox x:Name="PortBox" HorizontalAlignment="Left" Height="26" Margin="89,79,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="145" TextChanged="PortChanged"/>
+        <TextBox x:Name="PortBox" HorizontalAlignment="Left" Height="26" Margin="89,79,0,0" TextWrapping="Wrap" Text="8080" VerticalAlignment="Top" Width="145" TextChanged="PortChanged"/>
         <Button Content="Connect" HorizontalAlignment="Left" Margin="278,25,0,0" VerticalAlignment="Top" Width="96" Height="26" Click="ConnectButtonClicked"/>
         <Button x:Name="Disconnect" Content="Disconnect" HorizontalAlignment="Left" Margin="278,79,0,0" VerticalAlignment="Top" Width="96" Height="26" Click="DisconnectButtonClicked"/>
-        <Button Content="Clear" HorizontalAlignment="Left" Margin="464,79,0,0" VerticalAlignment="Top" Width="96" Height="26"/>
-        <ListBox x:Name="ListBox1" HorizontalAlignment="Left" Height="134" Margin="30,139,0,0" VerticalAlignment="Top" Width="530"/>
+        <Button Content="Clear" HorizontalAlignment="Left" Margin="464,79,0,0" VerticalAlignment="Top" Width="96" Height="26" Click="ClearButtonClicked"/>
+        <ListBox x:Name="ListBox1" HorizontalAlignment="Left" Height="134" Margin="30,139,0,0" VerticalAlignment="Top" Width="530" ItemsSource="{Binding MessageReceived}"/>
+        <TextBlock Name="ListeningStatus" Foreground="Red" HorizontalAlignment="Left" Margin="511,25,0,0" TextWrapping="Wrap" Text="Stopped" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>
