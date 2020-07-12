@@ -22,7 +22,7 @@ namespace UDPServer
     public partial class MainWindow : Window
     {
 
-        MyUDPServer server = new MyUDPServer();
+        var server = new MyUDPServer();
         Thread listeningThread;
 
         public MainWindow()

@@ -21,7 +21,7 @@ namespace UDPCommGUI
     public partial class MainWindow : Window
     {
 
-        MyUDPClient client = new MyUDPClient();
+        var client = new MyUDPClient();
 
         public MainWindow()
         {
