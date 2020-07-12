@@ -35,15 +35,11 @@ namespace UDPCommGUI
 
         private void PortChanged(object sender, TextChangedEventArgs e)
         {
-            try
+            int parseOut;
+            if (int.TryParse(PortBox.Text, out parseOut))
             {
-                client.ConnectionPort = Int32.Parse(PortBox.Text);
+                client.ConnectionPort = parseOut;
             }
-            finally
-            {
-
-            }
-            
         }
 
         private void Connect(object sender, RoutedEventArgs e)
