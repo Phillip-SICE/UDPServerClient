@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -22,7 +23,7 @@ namespace UDPServer
     public partial class MainWindow : Window
     {
 
-        var server = new MyUDPServer();
+        MyUDPServer server = new MyUDPServer();
         Thread listeningThread;
 
         public MainWindow()
@@ -30,6 +31,8 @@ namespace UDPServer
             InitializeComponent();
             ListBox1.ItemsSource = server.MessageReceived;
             this.DataContext = server;
+            IPBox.Text = ConfigurationManager.AppSettings["IPAddress"];
+            PortBox.Text = ConfigurationManager.AppSettings["PortNumber"];
         }
 
         private void IPChanged(object sender, TextChangedEventArgs e)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,11 +22,13 @@ namespace UDPCommGUI
     public partial class MainWindow : Window
     {
 
-        var client = new MyUDPClient();
+        MyUDPClient client = new MyUDPClient();
 
         public MainWindow()
         {
             InitializeComponent();
+            IPbox.Text = ConfigurationManager.AppSettings["IPAddress"];
+            PortBox.Text = ConfigurationManager.AppSettings["PortNumber"];
         }
 
         private void IPChanged(object sender, TextChangedEventArgs e)

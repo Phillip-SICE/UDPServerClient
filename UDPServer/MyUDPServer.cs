@@ -65,7 +65,7 @@ namespace UDPServer
 
         public async Task GetData()
         {
-            IPEndPoint remoteIpEndPoint = new IPEndPoint(IPAddress.Parse(ConnectionIP), ConnectionPort);
+            var remoteIpEndPoint = new IPEndPoint(IPAddress.Parse(ConnectionIP), ConnectionPort);
             //byte[] data = client.Receive(ref remoteIpEndPoint);
             var data = await client.ReceiveAsync();
             ReceivedData = Encoding.ASCII.GetString(data.Buffer);

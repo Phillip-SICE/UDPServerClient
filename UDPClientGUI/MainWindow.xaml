@@ -12,11 +12,11 @@
             <ColumnDefinition Width="15*"/>
             <ColumnDefinition Width="468*"/>
         </Grid.ColumnDefinitions>
-        <TextBox x:Name="IPbox" HorizontalAlignment="Left" Height="43" Margin="84.933,23,0,0" TextWrapping="Wrap" Text="127.0.0.1" VerticalAlignment="Top" Width="161" Grid.Column="2" TextChanged="IPChanged"/>
+        <TextBox x:Name="IPbox" HorizontalAlignment="Left" Height="43" Margin="84.933,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="161" Grid.Column="2" TextChanged="IPChanged"/>
         <Button Content="Connect" HorizontalAlignment="Left" Height="43" Margin="273.933,73,0,0" VerticalAlignment="Top" Width="117" Grid.Column="2" Click="Connect"/>
         <Label Content="IP" HorizontalAlignment="Left" Margin="13.933,32,0,0" VerticalAlignment="Top" Grid.Column="2"/>
         <Label Content="Port&#xD;&#xA;" HorizontalAlignment="Left" Margin="13.933,87,0,0" VerticalAlignment="Top" Grid.Column="2"/>
-        <TextBox x:Name="PortBox" HorizontalAlignment="Left" Height="43" Margin="84.933,73,0,0" TextWrapping="Wrap" Text="8080" VerticalAlignment="Top" Width="161" Grid.Column="2" TextChanged="PortChanged"/>
+        <TextBox x:Name="PortBox" HorizontalAlignment="Left" Height="43" Margin="84.933,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="161" Grid.Column="2" TextChanged="PortChanged"/>
         <TextBox x:Name="MessageBox" HorizontalAlignment="Left" Height="43" Margin="84.933,189,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="161" Grid.Column="2" TextChanged="MessageChanged"/>
         <Label Content="Message&#xA;" HorizontalAlignment="Left" Margin="13.933,190,0,0" VerticalAlignment="Top" Grid.Column="2"/>
         <Button Content="Send" HorizontalAlignment="Left" Height="43" Margin="273.933,189,0,0" VerticalAlignment="Top" Width="117" Grid.Column="2" Click="SendButtonClicked"/>
