@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,10 +23,16 @@ namespace UDPCommGUI
     public partial class MainWindow : Window
     {
 
-        MyUDPClient client = new MyUDPClient();
+        private readonly MyUDPClient client = new MyUDPClient();
+        bool ipValid;
+        bool portValid;
+        bool msgValid;
 
         public MainWindow()
         {
+            ipValid = false;
+            portValid = false;
+            msgValid = false;
             InitializeComponent();
             IPbox.Text = ConfigurationManager.AppSettings["IPAddress"];
             PortBox.Text = ConfigurationManager.AppSettings["PortNumber"];
@@ -33,13 +40,17 @@ namespace UDPCommGUI
 
         private void IPChanged(object sender, TextChangedEventArgs e)
         {
-            client.ConnectionIP = IPbox.Text;
+            ipValid = IPAddress.TryParse(IPbox.Text, out IPAddress parseOut);
+            if (ipValid)
+            {
+                client.ConnectionIP = parseOut;
+            }
         }
 
         private void PortChanged(object sender, TextChangedEventArgs e)
         {
-            int parseOut;
-            if (int.TryParse(PortBox.Text, out parseOut))
+            portValid = int.TryParse(PortBox.Text, out int parseOut);
+            if (portValid)
             {
                 client.ConnectionPort = parseOut;
             }
@@ -47,45 +58,54 @@ namespace UDPCommGUI
 
         private void Connect(object sender, RoutedEventArgs e)
         {
+            if (!ipValid)
+            {
+                MessageBox.Show("Invalid IP");
+                return;
+            }
+            if (!portValid)
+            {
+                MessageBox.Show("Invalid port");
+                return;
+            }
             client.Connect();
-            ChangeStatus();
+            this.Dispatcher.Invoke(() =>
+            {
+                ConStatus.Text = "Connected";
+                ConStatus.Foreground = new SolidColorBrush(Colors.Green); ;
+            });
         }
 
         private void MessageChanged(object sender, TextChangedEventArgs e)
         {
-            client.InputMessage = MessageBox.Text;
+            msgValid = !string.IsNullOrEmpty(MsgBox.Text);
+            if(msgValid)
+            {
+                client.InputMessage = MsgBox.Text;
+            }
         }
 
         private void SendButtonClicked(object sender, RoutedEventArgs e)
         {
+            if(!msgValid)
+            {
+                MessageBox.Show("Message empty");
+                return;
+            }
             client.SendMessage();
         }
 
-        private void DisConnectClicked(object sender, RoutedEventArgs e)
+        private void DisconnectClicked(object sender, RoutedEventArgs e)
         {
             client.Disconnect();
-            ChangeStatus();
-        }
-
-        private void ChangeStatus()
-        {
-            if (client.ConnectionStatus)
+            client.Dispose();
+            //ChangeStatus();
+            this.Dispatcher.Invoke(() =>
             {
-                this.Dispatcher.Invoke(() =>
-                {
-                    ConStatus.Text="Connected";
-                    ConStatus.Foreground = new SolidColorBrush(Colors.Green); ;
-                });
-            }
-            else
-            {
-                this.Dispatcher.Invoke(() =>
-                {
-                    ConStatus.Text = "Disconnected";
-                    ConStatus.Foreground = new SolidColorBrush(Colors.Red);
-                });
-            }
-        }
+                ConStatus.Text = "Disconnected";
+                ConStatus.Foreground = new SolidColorBrush(Colors.Red);
+            });
 
+        }
     }
 }

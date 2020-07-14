@@ -11,13 +11,11 @@ using System.Threading.Tasks;
 
 namespace UDPServer
 {
-    class MyUDPServer : IServerInterface, INotifyPropertyChanged
+    class MyUDPServer : IServerInterface
     {
         private UdpClient client;
 
         private int currentPort;
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public MyUDPServer()
         {
@@ -27,7 +25,7 @@ namespace UDPServer
             this.currentPort = -1;
         }
 
-        public string ConnectionIP { get; set; }
+        public IPAddress ConnectionIP { get; set; }
 
         public int ConnectionPort { get; set; }
 
@@ -39,10 +37,7 @@ namespace UDPServer
 
         public int MessageReceivedNumber { get; set; }
 
-        public int DataAvailable
-        {
-            get { return client.Available; }
-        }
+        public int DataAvailable => client.Available;
         
         public void Connect()
         {
@@ -65,12 +60,11 @@ namespace UDPServer
 
         public async Task GetData()
         {
-            var remoteIpEndPoint = new IPEndPoint(IPAddress.Parse(ConnectionIP), ConnectionPort);
-            //byte[] data = client.Receive(ref remoteIpEndPoint);
+            var remoteIpEndPoint = new IPEndPoint(ConnectionIP, ConnectionPort);
             var data = await client.ReceiveAsync();
             ReceivedData = Encoding.ASCII.GetString(data.Buffer);
             this.MessageReceivedNumber++;
-            this.MessageReceived.Add(this.MessageReceivedNumber.ToString() + ". " + ReceivedData);
+            this.MessageReceived.Add($"{this.MessageReceivedNumber.ToString()}. {ReceivedData}");
         }
 
         public void ClearMessage()
@@ -79,9 +73,9 @@ namespace UDPServer
             this.MessageReceivedNumber = 0;
         }
 
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        public void Dispose()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            client.Dispose();
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,12 +24,19 @@ namespace UDPServer
     public partial class MainWindow : Window
     {
 
-        MyUDPServer server = new MyUDPServer();
-        Thread listeningThread;
+        private readonly MyUDPServer server = new MyUDPServer();
+        bool portValid;
+        bool ipValid;
+        CancellationTokenSource ctSource;
+        CancellationToken token;
 
         public MainWindow()
         {
+            portValid = false;
+            ipValid = false;
             InitializeComponent();
+            //ctSource = new CancellationTokenSource();
+            //token = ctSource.Token;
             ListBox1.ItemsSource = server.MessageReceived;
             this.DataContext = server;
             IPBox.Text = ConfigurationManager.AppSettings["IPAddress"];
@@ -37,32 +45,55 @@ namespace UDPServer
 
         private void IPChanged(object sender, TextChangedEventArgs e)
         {
-            server.ConnectionIP = IPBox.Text;
+            ipValid = IPAddress.TryParse(IPBox.Text, out IPAddress parseOut);
+            if (ipValid)
+            {
+                server.ConnectionIP = parseOut;
+            }
         }
 
         private void PortChanged(object sender, TextChangedEventArgs e)
         {
-            server.ConnectionPort = Int32.Parse(PortBox.Text);
+            portValid = int.TryParse(PortBox.Text, out int parseOut);
+            if (portValid)
+            {
+                server.ConnectionPort = parseOut;
+            }
         }
 
         private void ConnectButtonClicked(object sender, RoutedEventArgs e)
         {
+            if(!ipValid)
+            {
+                MessageBox.Show("Invalid IP");
+                return;
+            }
+            if(!portValid)
+            {
+                MessageBox.Show("Invalid port");
+                return;
+            }
             if(!server.ConnectionStatus)
             {
                 server.Connect();
-                listeningThread = new Thread(new ThreadStart(GetData));
-                listeningThread.Start();
-                this.ChangeStatus();
+                ctSource = new CancellationTokenSource();
+                token = ctSource.Token;
+                Task.Run(() => GetData(), token);
+                this.Dispatcher.Invoke(() =>
+                {
+                    ListeningStatus.Text = "Listening";
+                    ListeningStatus.Foreground = new SolidColorBrush(Colors.Green); ;
+                });
             }            
         }
 
-        private void GetData()
+        private async Task GetData()
         {
             while (true)
             {
                 if(server.DataAvailable != 0)
                 {
-                    this.Dispatcher.Invoke(async () =>
+                    await this.Dispatcher.Invoke(async () =>
                     {
                         await server.GetData();
                     });
@@ -74,30 +105,15 @@ namespace UDPServer
         {
             if(server.ConnectionStatus)
             {
-                listeningThread.Abort();
                 server.Disconnect();
-                this.ChangeStatus();
-            }            
-        }
-
-        private void ChangeStatus()
-        {
-            if (server.ConnectionStatus)
-            {
-                this.Dispatcher.Invoke(() =>
-                {
-                    ListeningStatus.Text = "Listening";
-                    ListeningStatus.Foreground = new SolidColorBrush(Colors.Green); ;
-                });
-            }
-            else
-            {
+                ctSource.Cancel();
+                server.Dispose();
                 this.Dispatcher.Invoke(() =>
                 {
                     ListeningStatus.Text = "Stoped";
                     ListeningStatus.Foreground = new SolidColorBrush(Colors.Red);
                 });
-            }
+            }            
         }
 
         private void ClearButtonClicked(object sender, RoutedEventArgs e)

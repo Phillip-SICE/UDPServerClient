@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UDPServer"
         mc:Ignorable="d"
-        Title="UDPServer" Height="351.681" Width="602.101">
+        Title="UDPServer" Height="350" Width="600">
     <Grid>
         <Label Content="IP" HorizontalAlignment="Left" Margin="30,25,0,0" VerticalAlignment="Top"/>
         <Label Content="Port" HorizontalAlignment="Left" Margin="30,79,0,0" VerticalAlignment="Top"/>

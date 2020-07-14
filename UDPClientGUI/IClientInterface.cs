@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace UDPCommGUI
 {
-    interface IClientInterface
+    interface IClientInterface : IDisposable
     {
-        string ConnectionIP { get; set; }
+        IPAddress ConnectionIP { get; set; }
 
         int ConnectionPort { get; set; }
 

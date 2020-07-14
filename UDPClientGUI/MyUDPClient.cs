@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace UDPCommGUI
             this.ConnectionStatus = false;
         }
 
-        public string ConnectionIP { get; set; }
+        public IPAddress ConnectionIP { get; set; }
 
         public int ConnectionPort { get; set; }
 
@@ -45,9 +46,14 @@ namespace UDPCommGUI
         {
             if(ConnectionStatus)
             {
-                byte[] message = Encoding.ASCII.GetBytes(InputMessage);
+                var message = Encoding.ASCII.GetBytes(InputMessage);
                 client.Send(message, message.Length);
             }            
+        }
+
+        public void Dispose()
+        {
+            client.Dispose();
         }
     }
 }

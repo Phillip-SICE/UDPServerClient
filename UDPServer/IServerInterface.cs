@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace UDPServer
 {
-    interface IServerInterface
+    interface IServerInterface : IDisposable
     {
-        string ConnectionIP { get; set; }
+        IPAddress ConnectionIP { get; set; }
 
         int ConnectionPort { get; set; }
 
@@ -18,7 +19,5 @@ namespace UDPServer
 
         void Disconnect();
 
-        //Task GetData();
-        
     }
 }
