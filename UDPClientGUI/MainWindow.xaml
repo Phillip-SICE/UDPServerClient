@@ -1,0 +1,30 @@
+﻿<Window x:Class="UDPCommGUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UDPCommGUI"
+        mc:Ignorable="d"
+        Title="UDP client" Height="320" Width="540">
+    <Grid Margin="0,0,2,-5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="49*"/>
+            <ColumnDefinition Width="15*"/>
+            <ColumnDefinition Width="468*"/>
+        </Grid.ColumnDefinitions>
+        <TextBox x:Name="IPbox" HorizontalAlignment="Left" Height="43" Margin="84.933,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="161" Grid.Column="2" TextChanged="IPChanged"/>
+        <Button Content="Connect" HorizontalAlignment="Left" Height="43" Margin="273.933,73,0,0" VerticalAlignment="Top" Width="117" Grid.Column="2" Click="Connect"/>
+        <Label Content="IP" HorizontalAlignment="Left" Margin="13.933,32,0,0" VerticalAlignment="Top" Grid.Column="2"/>
+        <Label Content="Port&#xD;&#xA;" HorizontalAlignment="Left" Margin="13.933,87,0,0" VerticalAlignment="Top" Grid.Column="2"/>
+        <TextBox x:Name="PortBox" HorizontalAlignment="Left" Height="43" Margin="84.933,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="161" Grid.Column="2" TextChanged="PortChanged"/>
+        <TextBox x:Name="MsgBox" HorizontalAlignment="Left" Height="43" Margin="84.933,189,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="161" Grid.Column="2" TextChanged="MessageChanged"/>
+        <Label Content="Message&#xA;" HorizontalAlignment="Left" Margin="13.933,190,0,0" VerticalAlignment="Top" Grid.Column="2"/>
+        <Button Content="Send" HorizontalAlignment="Left" Height="43" Margin="273.933,189,0,0" VerticalAlignment="Top" Width="117" Grid.Column="2" Click="SendButtonClicked"/>
+        <Button Content="Disconnect" HorizontalAlignment="Left" Height="43" Margin="274,131,0,0" VerticalAlignment="Top" Width="117" Grid.Column="2" Click="DisconnectClicked" RenderTransformOrigin="0.535,1.6"/>
+        <TextBlock Name="ConStatus" Foreground="Red" Grid.Column="2" HorizontalAlignment="Left" Margin="319,32,0,0" TextWrapping="Wrap" Text="Disconencted" VerticalAlignment="Top"/>
+
+
+    </Grid>
+
+
+</Window>
