@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace UDPServer
 {
-    class MyUDPServer : IServerInterface
+    class SiceUDPServer : IServerInterface
     {
         private UdpClient client;
 
         private int currentPort;
 
-        public MyUDPServer()
+        public SiceUDPServer()
         {
             this.ConnectionStatus = false;
             this.MessageReceived = new ObservableCollection<string>();

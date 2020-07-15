@@ -18,6 +18,5 @@ namespace UDPServer
         void Connect();
 
         void Disconnect();
-
     }
 }

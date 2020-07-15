@@ -24,7 +24,7 @@ namespace UDPServer
     public partial class MainWindow : Window
     {
 
-        private readonly MyUDPServer server = new MyUDPServer();
+        private readonly SiceUDPServer server = new SiceUDPServer();
         bool portValid;
         bool ipValid;
         CancellationTokenSource ctSource;

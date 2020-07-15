@@ -22,7 +22,5 @@ namespace UDPCommGUI
         void Disconnect();
 
         void SendMessage();
-
-
     }
 }

@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace UDPCommGUI
 {
-    class MyUDPClient : IClientInterface
+    class SiceUDPClient : IClientInterface
     {
 
         private UdpClient client;
     
-        public MyUDPClient()
+        public SiceUDPClient()
         {
             this.ConnectionStatus = false;
         }

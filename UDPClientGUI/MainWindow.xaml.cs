@@ -23,7 +23,7 @@ namespace UDPCommGUI
     public partial class MainWindow : Window
     {
 
-        private readonly MyUDPClient client = new MyUDPClient();
+        private readonly SiceUDPClient client = new SiceUDPClient();
         bool ipValid;
         bool portValid;
         bool msgValid;
@@ -99,13 +99,11 @@ namespace UDPCommGUI
         {
             client.Disconnect();
             client.Dispose();
-            //ChangeStatus();
             this.Dispatcher.Invoke(() =>
             {
                 ConStatus.Text = "Disconnected";
                 ConStatus.Foreground = new SolidColorBrush(Colors.Red);
             });
-
         }
     }
 }
