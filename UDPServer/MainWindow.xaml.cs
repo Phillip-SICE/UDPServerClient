@@ -35,8 +35,6 @@ namespace UDPServer
             portValid = false;
             ipValid = false;
             InitializeComponent();
-            //ctSource = new CancellationTokenSource();
-            //token = ctSource.Token;
             ListBox1.ItemsSource = server.MessageReceived;
             this.DataContext = server;
             IPBox.Text = ConfigurationManager.AppSettings["IPAddress"];
