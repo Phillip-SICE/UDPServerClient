@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace UDPCommGUI
+namespace Sice.PoC.UDPCommGUI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

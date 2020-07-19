@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace UDPCommGUI
+namespace Sice.PoC.UDPCommGUI
 {
     /// <summary>
     /// Interaction logic for App.xaml

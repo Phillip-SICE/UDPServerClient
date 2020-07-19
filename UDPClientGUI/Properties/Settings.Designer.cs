@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace UDPCommGUI.Properties
+namespace Sice.PoC.UDPCommGUI.Properties
 {
 
 

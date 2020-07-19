@@ -5,7 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UDPCommGUI
+namespace Sice.PoC.UDPCommGUI
 {
     interface IClientInterface : IDisposable
     {

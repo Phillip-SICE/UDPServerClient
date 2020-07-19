@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace UDPServer.Properties
+namespace Sice.PoC.UDPServer.Properties
 {
 
 
