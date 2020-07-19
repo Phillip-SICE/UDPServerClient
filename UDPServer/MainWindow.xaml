@@ -14,7 +14,7 @@
         <Button Content="Connect" HorizontalAlignment="Left" Margin="278,25,0,0" VerticalAlignment="Top" Width="96" Height="26" Click="ConnectButtonClicked"/>
         <Button x:Name="Disconnect" Content="Disconnect" HorizontalAlignment="Left" Margin="278,79,0,0" VerticalAlignment="Top" Width="96" Height="26" Click="DisconnectButtonClicked"/>
         <Button Content="Clear" HorizontalAlignment="Left" Margin="464,79,0,0" VerticalAlignment="Top" Width="96" Height="26" Click="ClearButtonClicked"/>
-        <ListBox x:Name="ListBox1" HorizontalAlignment="Left" Height="134" Margin="30,139,0,0" VerticalAlignment="Top" Width="530" ItemsSource="{Binding MessageReceived}"/>
+        <ListBox x:Name="ListBox1" HorizontalAlignment="Left" Height="134" Margin="30,139,0,0" VerticalAlignment="Top" Width="530" ItemsSource="{Binding ReceivedMessages}"/>
         <TextBlock Name="ListeningStatus" Foreground="Red" HorizontalAlignment="Left" Margin="511,25,0,0" TextWrapping="Wrap" Text="Stopped" VerticalAlignment="Top"/>
 
     </Grid>
