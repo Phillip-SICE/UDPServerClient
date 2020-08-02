@@ -18,7 +18,7 @@ namespace Sice.PoC.UDPServer
         public int ConnectionPort { get; set; }
         public string ReceivedData { get; set; }
         public bool ConnectionStatus { get; set; }
-        public string ReceivedMessage { get; set; }
+        public ReceivedMessage ReceivedMessage { get; set; }
         public int DataAvailable => client.Available;
 
         public SiceUDPServer()
@@ -73,7 +73,13 @@ namespace Sice.PoC.UDPServer
             var remoteIpEndPoint = new IPEndPoint(ConnectionIP, ConnectionPort);
             var data = await client.ReceiveAsync();
             ReceivedData = Encoding.ASCII.GetString(data.Buffer);
-            OnMessageReceived(new MessageReceivedEventArgs(ReceivedData));
+            ReceivedMessage = new ReceivedMessage(DateTime.Now.ToString(), data.RemoteEndPoint.Address.ToString(), ReceivedData);
+            OnMessageReceived(new MessageReceivedEventArgs(ReceivedMessage));
+            using (var db = new ServerContext())
+            {
+                db.ReceivedMessages.Add(ReceivedMessage);
+                db.SaveChanges();
+            }
         }
 
         public void Dispose()

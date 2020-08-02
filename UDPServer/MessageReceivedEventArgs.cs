@@ -1,13 +1,13 @@
 ﻿using System;
 
-namespace UDPServer
+namespace Sice.PoC.UDPServer
 {
     public class MessageReceivedEventArgs: EventArgs
     {
-        public MessageReceivedEventArgs(string args)
+        public MessageReceivedEventArgs(ReceivedMessage args)
         {
             ReceivedMessage = args;
         }
-        public string ReceivedMessage { get; set; }
+        public ReceivedMessage ReceivedMessage { get; set; }
     }
 }

@@ -98,7 +98,7 @@ namespace Sice.PoC.UDPServer
         {
             this.Dispatcher.Invoke(() =>
             {
-                ReceivedMessages.Add(e.ReceivedMessage);
+                ReceivedMessages.Add(e.ReceivedMessage.Message);
             });
         }
     }

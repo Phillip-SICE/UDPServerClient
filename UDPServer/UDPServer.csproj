@@ -40,6 +40,9 @@
   <ItemGroup>
     <!-- ... -->
     <PackageReference Include="Caliburn.Micro" Version="3.2.0.0" />
+    <PackageReference Include="EntityFramework">
+      <Version>6.4.4</Version>
+    </PackageReference>
     <!-- ... -->
   </ItemGroup>
   <ItemGroup>
@@ -92,6 +95,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MessageReceivedEventArgs.cs" />
+    <Compile Include="ReceivedMessage.cs" />
+    <Compile Include="ServerContext.cs" />
     <Compile Include="SiceUDPServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
