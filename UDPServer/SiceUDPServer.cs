@@ -4,7 +4,6 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using UDPServer;
 
 namespace Sice.PoC.UDPServer
 {
@@ -78,7 +77,7 @@ namespace Sice.PoC.UDPServer
             using (var db = new ServerContext())
             {
                 db.ReceivedMessages.Add(ReceivedMessage);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
             }
         }
 

@@ -4,7 +4,6 @@ using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using UDPServer;
 
 namespace Sice.PoC.UDPServer
 {
