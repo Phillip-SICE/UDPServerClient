@@ -1,22 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 using System.Configuration;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace UDPServer
+namespace Sice.PoC.UDPServer
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -25,18 +14,19 @@ namespace UDPServer
     {
 
         private readonly SiceUDPServer server = new SiceUDPServer();
+        public ObservableCollection<string> ReceivedMessages;
         bool portValid;
         bool ipValid;
-        CancellationTokenSource ctSource;
-        CancellationToken token;
 
         public MainWindow()
         {
             portValid = false;
             ipValid = false;
+            server.MessageReceivedEventHandler += server_MessageReceived;
+            ReceivedMessages = new ObservableCollection<string>();
             InitializeComponent();
-            ListBox1.ItemsSource = server.MessageReceived;
-            this.DataContext = server;
+            ListBox1.ItemsSource = ReceivedMessages;
+            this.DataContext = this;
             IPBox.Text = ConfigurationManager.AppSettings["IPAddress"];
             PortBox.Text = ConfigurationManager.AppSettings["PortNumber"];
         }
@@ -74,9 +64,6 @@ namespace UDPServer
             if(!server.ConnectionStatus)
             {
                 server.Connect();
-                ctSource = new CancellationTokenSource();
-                token = ctSource.Token;
-                Task.Run(() => GetData(), token);
                 this.Dispatcher.Invoke(() =>
                 {
                     ListeningStatus.Text = "Listening";
@@ -85,27 +72,11 @@ namespace UDPServer
             }            
         }
 
-        private async Task GetData()
-        {
-            while (true)
-            {
-                if(server.DataAvailable != 0)
-                {
-                    await this.Dispatcher.Invoke(async () =>
-                    {
-                        await server.GetData();
-                    });
-                }
-            }
-        }
-
         private void DisconnectButtonClicked(object sender, RoutedEventArgs e)
         {
             if(server.ConnectionStatus)
             {
                 server.Disconnect();
-                ctSource.Cancel();
-                server.Dispose();
                 this.Dispatcher.Invoke(() =>
                 {
                     ListeningStatus.Text = "Stoped";
@@ -118,7 +89,15 @@ namespace UDPServer
         {
             this.Dispatcher.Invoke(() =>
             {
-                server.ClearMessage();
+                ReceivedMessages.Clear();
+            });
+        }
+
+        public void server_MessageReceived(object sender, MessageReceivedEventArgs e)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                ReceivedMessages.Add(e.ReceivedMessage.Message);
             });
         }
     }

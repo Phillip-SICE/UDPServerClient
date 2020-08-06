@@ -1,44 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace UDPServer
+namespace Sice.PoC.UDPServer
 {
     class SiceUDPServer : IServerInterface
     {
         private UdpClient client;
-
+        CancellationTokenSource source;
+        CancellationToken token;
         private int currentPort;
+        public IPAddress ConnectionIP { get; set; }
+        public int ConnectionPort { get; set; }
+        public string ReceivedData { get; set; }
+        public bool ConnectionStatus { get; set; }
+        public ReceivedMessage ReceivedMessage { get; set; }
+        public int DataAvailable => client.Available;
 
         public SiceUDPServer()
         {
             this.ConnectionStatus = false;
-            this.MessageReceived = new ObservableCollection<string>();
-            this.MessageReceivedNumber = 0;
             this.currentPort = -1;
         }
 
-        public IPAddress ConnectionIP { get; set; }
-
-        public int ConnectionPort { get; set; }
-
-        public string ReceivedData { get; set; }
-
-        public bool ConnectionStatus { get; set; }
-
-        public ObservableCollection<string> MessageReceived { get; set; }
-
-        public int MessageReceivedNumber { get; set; }
-
-        public int DataAvailable => client.Available;
-        
         public void Connect()
         {
             if(!ConnectionStatus)
@@ -46,6 +33,20 @@ namespace UDPServer
                 client = new UdpClient(ConnectionPort);
                 currentPort = ConnectionPort;
                 this.ConnectionStatus = true;
+                source = new CancellationTokenSource();
+                token = source.Token;
+                Task.Run(() => Listen(), token);
+            }
+        }
+
+        private async Task Listen()
+        {
+            while (true)
+            {
+                if (DataAvailable != 0)
+                {
+                    await GetData();
+                }
             }
         }
 
@@ -55,7 +56,15 @@ namespace UDPServer
             {
                 client.Close();
                 this.ConnectionStatus = false;
+                source.Cancel();
             }
+        }
+
+        public event EventHandler<MessageReceivedEventArgs> MessageReceivedEventHandler;
+
+        protected virtual void OnMessageReceived(MessageReceivedEventArgs e)
+        {
+            MessageReceivedEventHandler?.Invoke(this, e);
         }
 
         public async Task GetData()
@@ -63,14 +72,13 @@ namespace UDPServer
             var remoteIpEndPoint = new IPEndPoint(ConnectionIP, ConnectionPort);
             var data = await client.ReceiveAsync();
             ReceivedData = Encoding.ASCII.GetString(data.Buffer);
-            this.MessageReceivedNumber++;
-            this.MessageReceived.Add($"{this.MessageReceivedNumber.ToString()}. {ReceivedData}");
-        }
-
-        public void ClearMessage()
-        {
-            this.MessageReceived.Clear();
-            this.MessageReceivedNumber = 0;
+            ReceivedMessage = new ReceivedMessage(DateTime.Now.ToString(), data.RemoteEndPoint.Address.ToString(), ReceivedData);
+            OnMessageReceived(new MessageReceivedEventArgs(ReceivedMessage));
+            using (var db = new ServerContext())
+            {
+                db.ReceivedMessages.Add(ReceivedMessage);
+                await db.SaveChangesAsync();
+            }
         }
 
         public void Dispose()
