@@ -5,16 +5,16 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using UDPServer;
 
 namespace Sice.PoC.UDPServer
 {
-    public class SiceUDPServer : IServerInterface, IHandle<SiceUDPServer.ServerCommand>
+    public class SiceUDPServer : IServerInterface, IHandle<ServerCommandEvent>
     {
         private IEventAggregator eventAggregator;
         private UdpClient client;
-        CancellationTokenSource source;
-        CancellationToken token;
-        private int currentPort;
+        private CancellationTokenSource source;
+        private CancellationToken token;
         public IPAddress ConnectionIP { get; set; }
         public int ConnectionPort { get; set; }
         public string ReceivedData { get; set; }
@@ -25,7 +25,6 @@ namespace Sice.PoC.UDPServer
         public SiceUDPServer(IEventAggregator eventAggregator)
         {
             this.ConnectionStatus = false;
-            this.currentPort = -1;
             this.eventAggregator = eventAggregator;
             eventAggregator.Subscribe(this);
         }
@@ -35,12 +34,11 @@ namespace Sice.PoC.UDPServer
             if(!ConnectionStatus)
             {
                 client = new UdpClient(ConnectionPort);
-                currentPort = ConnectionPort;
                 source = new CancellationTokenSource();
                 token = source.Token;
                 Task.Run(() => Listen(), token);
                 this.ConnectionStatus = true;
-                eventAggregator.PublishOnUIThread(new ServerStatus(true));
+                eventAggregator.PublishOnUIThread(new ServerStatusChangedEvent(true));
             }
         }
 
@@ -62,7 +60,7 @@ namespace Sice.PoC.UDPServer
                 client.Close();
                 this.ConnectionStatus = false;
                 source.Cancel();
-                eventAggregator.PublishOnUIThread(new ServerStatus(false));
+                eventAggregator.PublishOnUIThread(new ServerStatusChangedEvent(false));
             }
         }
 
@@ -85,7 +83,7 @@ namespace Sice.PoC.UDPServer
             client.Dispose();
         }
 
-        public void Handle(ServerCommand command)
+        public void Handle(ServerCommandEvent command)
         {
             if(command.Command)
             {
@@ -97,34 +95,6 @@ namespace Sice.PoC.UDPServer
             {
                 this.Disconnect();
             }
-        }
-
-        public class ServerCommand
-        {
-            public ServerCommand(bool command, string IP, string port)
-            {
-                this.Command = command;
-                if(IPAddress.TryParse(IP, out IPAddress parseIP))
-                {
-                    ConnectionIP = parseIP;
-                }
-                if(int.TryParse(port, out int parsePort))
-                {
-                    ConnectionPort = parsePort;
-                }
-            }
-            public bool Command { get; set; }
-            public IPAddress ConnectionIP { get; set; }
-            public int ConnectionPort { get; set; }
-        }
-
-        public class ServerStatus
-        {
-            public ServerStatus(bool status)
-            {
-                this.Status = status;
-            }
-            public bool Status { get; set; }
         }
     }
 }

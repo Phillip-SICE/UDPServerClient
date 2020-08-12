@@ -22,7 +22,7 @@ namespace UDPServer
             _container.Singleton<IEventAggregator, EventAggregator>();
             _container.Singleton<IWindowManager, WindowManager>();
             _container.PerRequest<ShellViewModel>();
-            _container.RegisterPerRequest(typeof(SiceUDPServer), null, typeof(SiceUDPServer));
+            _container.Singleton<SiceUDPServer>();
         }
 
         protected override void OnStartup(object sender, StartupEventArgs e)

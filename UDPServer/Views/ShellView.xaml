@@ -4,8 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UDPServer.Views"
+        xmlns:local1="clr-namespace:UDPServer.ViewModels"
         mc:Ignorable="d"
         Title="UDPServer" Height="350" Width="600">
+    <Window.Resources>
+        <local1:StringToColorConverter x:Key="StringToColorConverter" />
+    </Window.Resources>
     <Grid>
         <Label Content="IP" HorizontalAlignment="Left" Margin="30,25,0,0" VerticalAlignment="Top"/>
         <Label Content="Port" HorizontalAlignment="Left" Margin="30,79,0,0" VerticalAlignment="Top"/>
@@ -15,6 +19,6 @@
         <Button x:Name="Disconnect" Content="Disconnect" HorizontalAlignment="Left" Margin="278,79,0,0" VerticalAlignment="Top" Width="96" Height="26"/>
         <Button x:Name="Clear" Content="Clear" HorizontalAlignment="Left" Margin="464,79,0,0" VerticalAlignment="Top" Width="96" Height="26"/>
         <ListBox x:Name="ReeivedMessages" ItemsSource="{Binding ReceivedMessages}" HorizontalAlignment="Left" Height="134" Margin="30,139,0,0" VerticalAlignment="Top" Width="530"/>
-        <TextBlock Name="ListeningStatus" Foreground="{Binding StatusTextColour}" HorizontalAlignment="Left" Margin="511,25,0,0" TextWrapping="Wrap" Text="Stopped" VerticalAlignment="Top"/>
+        <TextBlock Name="ListeningStatus" Foreground="{Binding ListeningStatus, Converter={StaticResource StringToColorConverter}}" HorizontalAlignment="Left" Margin="511,25,0,0" TextWrapping="Wrap" Text="Stopped" VerticalAlignment="Top"/>
     </Grid>
 </Window>
