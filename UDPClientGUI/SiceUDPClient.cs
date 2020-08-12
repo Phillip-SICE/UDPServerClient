@@ -1,16 +1,21 @@
-﻿using System.Net;
+﻿using Caliburn.Micro;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using UDPCommGUI;
 
 namespace Sice.PoC.UDPCommGUI
 {
-    class SiceUDPClient : IClientInterface
+    class SiceUDPClient : IClientInterface, IHandle<ClientCommandEvent>
     {
 
         private UdpClient client;
+        private IEventAggregator _eventAggregator;
     
-        public SiceUDPClient()
+        public SiceUDPClient(IEventAggregator eventAggregator)
         {
+            this._eventAggregator = eventAggregator;
+            this._eventAggregator.Subscribe(this);
             this.ConnectionStatus = false;
         }
 
@@ -27,6 +32,8 @@ namespace Sice.PoC.UDPCommGUI
             this.client = new UdpClient();
             client.Connect(ConnectionIP, ConnectionPort);
             this.ConnectionStatus = true;
+            this._eventAggregator.PublishOnUIThread(new ClientStatusChangedEvent(ConnectionStatus));
+
         }
 
         public void Disconnect()
@@ -35,6 +42,7 @@ namespace Sice.PoC.UDPCommGUI
             {
                 client.Close();
                 this.ConnectionStatus = false;
+                this._eventAggregator.PublishOnUIThread(new ClientStatusChangedEvent(ConnectionStatus));
             }
         }
 
@@ -50,6 +58,26 @@ namespace Sice.PoC.UDPCommGUI
         public void Dispose()
         {
             client.Dispose();
+        }
+
+        public void Handle(ClientCommandEvent Command)
+        {
+            ConnectionIP = Command.ConnectionIP;
+            ConnectionPort = Command.ConnectionPort;
+            if (Command.ClientCommand == ClientCommandEvent.Command.Connect) {
+                Connect();
+                return;
+            }
+            if (Command.ClientCommand == ClientCommandEvent.Command.Disconnect) {
+                Disconnect();
+                return;
+            }
+            if (Command.ClientCommand == ClientCommandEvent.Command.SendMessage)
+            {
+                InputMessage = Command.Message;
+                SendMessage();
+                return;
+            }
         }
     }
 }
