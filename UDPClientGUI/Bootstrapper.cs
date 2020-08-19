@@ -22,6 +22,7 @@ namespace UDPCommGUI
             _container.Singleton<IEventAggregator, EventAggregator>();
             _container.Singleton<IWindowManager, WindowManager>();
             _container.PerRequest<ShellViewModel>();
+            _container.PerRequest<LoginViewModel>();
             _container.Singleton<SiceUDPClient>();
         }
 

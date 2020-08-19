@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -62,22 +63,29 @@ namespace Sice.PoC.UDPCommGUI
 
         public void Handle(ClientCommandEvent Command)
         {
+            Dictionary<ClientCommandEvent.Command, System.Action> handler = new Dictionary<ClientCommandEvent.Command, System.Action>();
+            handler.Add(ClientCommandEvent.Command.Connect, Connect);
+            handler.Add(ClientCommandEvent.Command.Disconnect, Disconnect);
+            handler.Add(ClientCommandEvent.Command.SendMessage, SendMessage);
+            InputMessage = Command.Message;
             ConnectionIP = Command.ConnectionIP;
             ConnectionPort = Command.ConnectionPort;
-            if (Command.ClientCommand == ClientCommandEvent.Command.Connect) {
-                Connect();
-                return;
-            }
-            if (Command.ClientCommand == ClientCommandEvent.Command.Disconnect) {
-                Disconnect();
-                return;
-            }
-            if (Command.ClientCommand == ClientCommandEvent.Command.SendMessage)
-            {
-                InputMessage = Command.Message;
-                SendMessage();
-                return;
-            }
+            handler[Command.ClientCommand]();
+            //if (Command.ClientCommand == ClientCommandEvent.Command.Connect) {
+            //    Connect();
+            //    return;
+            //}
+            //if (Command.ClientCommand == ClientCommandEvent.Command.Disconnect) {
+            //    Disconnect();
+            //    return;
+            //}
+            //if (Command.ClientCommand == ClientCommandEvent.Command.SendMessage)
+            //{
+            //    InputMessage = Command.Message;
+            //    SendMessage();
+            //    return;
+            //}
         }
+
     }
 }
