@@ -4,10 +4,12 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using UDPCommGUI;
+using System.Web.Helpers;
+using Sice.PoC.UDPServer;
 
 namespace Sice.PoC.UDPCommGUI
 {
-    class SiceUDPClient : IClientInterface, IHandle<ClientCommandEvent>
+    class SiceUDPClient : IClientInterface, IHandle<ClientCommandEvent>, IHandle<ClientLoginEvent>
     {
 
         private UdpClient client;
@@ -87,5 +89,16 @@ namespace Sice.PoC.UDPCommGUI
             //}
         }
 
+        public void Handle(ClientLoginEvent loginEvent)
+        {
+            //LoginDetails credential = new LoginDetails(loginEvent.Username, loginEvent.Password);
+            //var credential = new { Username = loginEvent.Username, PasswordHash = loginEvent.Password; }
+            string loginJSON = Json.Encode(loginEvent);
+            if (ConnectionStatus)
+            {
+                var message = Encoding.ASCII.GetBytes(loginJSON);
+                client.Send(message, message.Length);
+            }
+        }
     }
 }

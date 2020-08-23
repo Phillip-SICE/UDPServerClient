@@ -6,8 +6,11 @@ namespace Sice.PoC.UDPServer
     {
         public ServerContext(): base("UDPServerConnectionString")
         {
-            Database.SetInitializer(new CreateDatabaseIfNotExists<ServerContext>());
         }
         public DbSet<ReceivedMessage> ReceivedMessages { get; set; }
+        public DbSet<Controller> Controllers { get; set; }
+        public DbSet<Login> Logins { get; set; }
+
+        
     }
 }

@@ -6,25 +6,15 @@ using System.Threading.Tasks;
 
 namespace UDPCommGUI
 {
-    public class ClientLoginSignUpEvent
+    public class ClientLoginEvent
     {
-        public ClientLoginSignUpEvent(Type type, string username, string password)
+        public ClientLoginEvent(string username, string password)
         {
-            this.EventType = type;
             this.Username = username;
             this.Password = password;
         }
 
         public readonly string Username;
         public readonly string Password;
-        public readonly Type EventType;
-
-        public enum Type
-        {
-            Login,
-            SignUp
-        }
     }
-
-
 }

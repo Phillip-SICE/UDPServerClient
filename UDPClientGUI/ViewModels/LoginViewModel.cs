@@ -48,18 +48,8 @@ namespace UDPCommGUI.ViewModels
 
         public void Login(string username, string password)
         {
-            _eventAggregator.PublishOnBackgroundThread(new ClientLoginSignUpEvent(ClientLoginSignUpEvent.Type.Login, Username, Password));
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
+            _eventAggregator.PublishOnBackgroundThread(new ClientLoginEvent(Username, passwordHash));
         }
-
-        public bool CanSignUp(string username, string password)
-        {
-            return CanLogin(username, password);
-        }
-
-        public void SignUp(string username, string password)
-        {
-            _eventAggregator.PublishOnBackgroundThread(new ClientLoginSignUpEvent(ClientLoginSignUpEvent.Type.SignUp, Username, Password));
-        }
-
     }
 }

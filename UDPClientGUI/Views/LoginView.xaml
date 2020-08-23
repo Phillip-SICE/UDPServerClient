@@ -12,6 +12,5 @@
         <TextBox x:Name="Username" HorizontalAlignment="Left" Height="23" Margin="89,19,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="90"/>
         <TextBox x:Name="Password" HorizontalAlignment="Left" Height="23" Margin="89,65,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="90"/>
         <Button x:Name="Login" Content="Login" HorizontalAlignment="Left" Margin="16,114,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button x:Name="SignUp" Content="SignUp" HorizontalAlignment="Left" Margin="104,114,0,0" VerticalAlignment="Top" Width="75"/>
     </Grid>
 </Window>

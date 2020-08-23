@@ -5,7 +5,9 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.Helpers;
 using UDPServer;
+using System.Linq;
 
 namespace Sice.PoC.UDPServer
 {
@@ -21,10 +23,12 @@ namespace Sice.PoC.UDPServer
         public bool ConnectionStatus { get; set; }
         public ReceivedMessage ReceivedMessage { get; set; }
         public int DataAvailable => client.Available;
+        public bool HasLoggedIn { get; set; }
 
         public SiceUDPServer(IEventAggregator eventAggregator)
         {
             this.ConnectionStatus = false;
+            this.HasLoggedIn = false;
             this.eventAggregator = eventAggregator;
             eventAggregator.Subscribe(this);
         }
@@ -48,7 +52,14 @@ namespace Sice.PoC.UDPServer
             {
                 if (DataAvailable != 0)
                 {
-                    await GetData();
+                    if (HasLoggedIn)
+                    {
+                        await GetData();
+                    }
+                    else
+                    {
+                        await GetLogin();
+                    }
                 }
             }
         }
@@ -75,6 +86,29 @@ namespace Sice.PoC.UDPServer
             {
                 db.ReceivedMessages.Add(ReceivedMessage);
                 await db.SaveChangesAsync();
+            }
+        }
+
+        public async Task GetLogin()
+        {
+            var remoteIpEndPoint = new IPEndPoint(ConnectionIP, ConnectionPort);
+            var data = await client.ReceiveAsync();
+            ReceivedData = Encoding.ASCII.GetString(data.Buffer);
+            var credential = Json.Decode(ReceivedData);
+            string username = credential.Username;
+            string passwordHash = credential.Password;
+            using (var db = new ServerContext())
+            {
+                var query = from login in db.Logins
+                            where login.Username == username
+                            select login;
+                foreach (var items in query)
+                {
+                    if (items.Username == username && items.PasswordHash == passwordHash)
+                    {
+                        HasLoggedIn = true;
+                    }
+                }
             }
         }
 
