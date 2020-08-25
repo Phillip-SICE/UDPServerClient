@@ -64,6 +64,7 @@ namespace Sice.PoC.UDPCommGUI
         {
             ConnectionIP = Command.ConnectionIP;
             ConnectionPort = Command.ConnectionPort;
+<<<<<<< Updated upstream
             if (Command.ClientCommand == ClientCommandEvent.Command.Connect) {
                 Connect();
                 return;
@@ -73,6 +74,15 @@ namespace Sice.PoC.UDPCommGUI
                 return;
             }
             if (Command.ClientCommand == ClientCommandEvent.Command.SendMessage)
+=======
+            handler[Command.ClientCommand]();
+        }
+
+        public void Handle(ClientLoginEvent loginEvent)
+        {
+            string loginJSON = Json.Encode(loginEvent);
+            if (ConnectionStatus)
+>>>>>>> Stashed changes
             {
                 InputMessage = Command.Message;
                 SendMessage();

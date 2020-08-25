@@ -114,4 +114,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+<<<<<<< Updated upstream
+=======
+  <data name="Connected" xml:space="preserve">
+    <value>Connected</value>
+  </data>
+  <data name="Listening" xml:space="preserve">
+    <value>Listening</value>
+  </data>
+  <data name="Stopped" xml:space="preserve">
+    <value>Stopped</value>
+  </data>
+>>>>>>> Stashed changes
 </root>

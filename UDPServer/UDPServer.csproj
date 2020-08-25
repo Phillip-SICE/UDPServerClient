@@ -69,6 +69,7 @@
     </ApplicationDefinition>
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Events\ServerCommandEvent.cs" />
+    <Compile Include="Events\ServerStatus.cs" />
     <Compile Include="Events\ServerStatusChangedEvent.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="ViewModels\StringToColorConverter.cs" />
@@ -86,7 +87,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MessageReceivedEventArgs.cs" />
     <Compile Include="SiceUDPServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

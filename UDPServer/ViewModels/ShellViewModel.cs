@@ -12,6 +12,7 @@ namespace UDPServer.ViewModels
         private string _iP;
         private string _port;
         private string _listeningStatus;
+        private string _controllerInfo;
 
         public ShellViewModel(IEventAggregator eventAggregator, SiceUDPServer siceUDPServer)
         {
@@ -52,6 +53,16 @@ namespace UDPServer.ViewModels
             }
         }
 
+        public string ControllerInfo
+        {
+            get => _controllerInfo;
+            set
+            {
+                _controllerInfo = value;
+                NotifyOfPropertyChange(nameof(ControllerInfo));
+            }
+        }
+
         public ObservableCollection<string> ReceivedMessages { get; set; }
         
         public bool CanConnect(string iP, string port)
@@ -83,7 +94,17 @@ namespace UDPServer.ViewModels
 
         public void Handle(ServerStatusChangedEvent status)
         {
-            this.ListeningStatus = status.Status ? "Listening" : "Stopped";
+            //this.ListeningStatus = status.Status ? "Listening" : "Stopped";
+            this.ListeningStatus = status.Status.ToString();
+            if(status.Status == ServerStatus.Listening)
+            {
+                ControllerInfo = $"on {status.ControllerInfo}";
+            }
+            else
+            {
+                ControllerInfo = "";
+            }
+            
         }
 
         

@@ -67,5 +67,35 @@ namespace Sice.PoC.UDPServer.Properties
                 resourceCulture = value;
             }
         }
+<<<<<<< Updated upstream
+=======
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connected.
+        /// </summary>
+        internal static string Connected {
+            get {
+                return ResourceManager.GetString("Connected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Listening.
+        /// </summary>
+        internal static string Listening {
+            get {
+                return ResourceManager.GetString("Listening", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stopped.
+        /// </summary>
+        internal static string Stopped {
+            get {
+                return ResourceManager.GetString("Stopped", resourceCulture);
+            }
+        }
+>>>>>>> Stashed changes
     }
 }
