@@ -12,7 +12,8 @@ namespace Sice.PoC.UDPCommGUI
 
         private UdpClient client;
         private IEventAggregator _eventAggregator;
-    
+
+
         public SiceUDPClient(IEventAggregator eventAggregator)
         {
             this._eventAggregator = eventAggregator;
@@ -63,28 +64,22 @@ namespace Sice.PoC.UDPCommGUI
 
         public void Handle(ClientCommandEvent Command)
         {
-            Dictionary<ClientCommandEvent.Command, System.Action> handler = new Dictionary<ClientCommandEvent.Command, System.Action>();
-            handler.Add(ClientCommandEvent.Command.Connect, Connect);
-            handler.Add(ClientCommandEvent.Command.Disconnect, Disconnect);
-            handler.Add(ClientCommandEvent.Command.SendMessage, SendMessage);
+            
             InputMessage = Command.Message;
             ConnectionIP = Command.ConnectionIP;
             ConnectionPort = Command.ConnectionPort;
-            handler[Command.ClientCommand]();
-            //if (Command.ClientCommand == ClientCommandEvent.Command.Connect) {
-            //    Connect();
-            //    return;
-            //}
-            //if (Command.ClientCommand == ClientCommandEvent.Command.Disconnect) {
-            //    Disconnect();
-            //    return;
-            //}
-            //if (Command.ClientCommand == ClientCommandEvent.Command.SendMessage)
-            //{
-            //    InputMessage = Command.Message;
-            //    SendMessage();
-            //    return;
-            //}
+            switch(Command.ClientCommand)
+            {
+                case ClientCommandEvent.Command.Connect: Connect();
+                    break;
+                case ClientCommandEvent.Command.Disconnect: Disconnect();
+                    break;
+                case ClientCommandEvent.Command.SendMessage: SendMessage();
+                    break;
+                default:
+                    break;
+            }
+            
         }
 
     }

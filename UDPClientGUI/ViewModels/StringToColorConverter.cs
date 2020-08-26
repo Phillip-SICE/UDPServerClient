@@ -29,9 +29,9 @@ namespace UDPCommGUI.ViewModels
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var Color = (value as SolidColorBrush)?.Color;
-            var ConnectionStatus = (Color == Colors.Red) ? RedString : GreenString;
-            return ConnectionStatus;
+            var color = (value as SolidColorBrush)?.Color;
+            var connectionStatus = (color == Colors.Red) ? RedString : GreenString;
+            return connectionStatus;
         }
     }
 }

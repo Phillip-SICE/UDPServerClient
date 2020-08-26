@@ -66,9 +66,6 @@ namespace UDPCommGUI.ViewModels
 
         public bool CanConnect(string iP, string port)
         {
-            //if (!IPAddress.TryParse(iP, out IPAddress parseIP)) return false;
-            //if (!int.TryParse(port, out int parsePort)) return false;
-            //return true;
             var validIP = IPAddress.TryParse(iP, out IPAddress parseIP);
             var validPort = int.TryParse(port, out int parsePort);
             return validIP && validPort;
@@ -92,12 +89,9 @@ namespace UDPCommGUI.ViewModels
 
         public bool CanSend(string message)
         {
-            //return (ConnectionStatus == "Connected") ? (!string.IsNullOrEmpty(message)) : false;
-            var Connected = (ConnectionStatus == "Connected");
-            var EmptyMessage = string.IsNullOrEmpty(message);
-            return (Connected && !EmptyMessage);
-            //if (ConnectionStatus == "Connected") return !(message is null || message == "");
-            //return false;
+            var connected = (ConnectionStatus == "Connected");
+            var emptyMessage = string.IsNullOrEmpty(message);
+            return (connected && !emptyMessage);
         }
 
         public void Send(string message)

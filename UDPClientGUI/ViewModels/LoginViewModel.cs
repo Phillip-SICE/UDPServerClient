@@ -41,8 +41,10 @@ namespace UDPCommGUI.ViewModels
 
         public bool CanLogin(string username, string password)
         {
-            if (username is null || username == "") return false;
-            if (password is null || password == "") return false;
+            if(string.IsNullOrEmpty(username.Trim()) || string.IsNullOrEmpty(password.Trim()))
+            {
+                return false;
+            }
             return true;
         }
 

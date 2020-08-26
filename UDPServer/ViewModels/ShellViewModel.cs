@@ -56,9 +56,9 @@ namespace UDPServer.ViewModels
         
         public bool CanConnect(string iP, string port)
         {
-            if (!IPAddress.TryParse(iP, out IPAddress parseIP)) return false;
-            if (!int.TryParse(port, out int parsePort)) return false;
-            return true;
+            var validIP = IPAddress.TryParse(iP, out IPAddress parseIP);
+            var validPort = int.TryParse(port, out int parsePort);
+            return validIP && validPort;
         }
 
         public void Connect(string iP, string port)
