@@ -27,41 +27,25 @@ namespace UDPCommGUI.ViewModels
         public string IP
         {
             get => _iP;
-            set
-            {
-                _iP = value;
-                NotifyOfPropertyChange(nameof(IP));
-            }
+            set => Set<string>(ref _iP, value, nameof(IP));
         }
 
         public string Port
         {
             get => _port;
-            set
-            {
-                _port = value;
-                NotifyOfPropertyChange(nameof(Port));
-            }
+            set => Set<string>(ref _port, value, nameof(Port));
         }
 
         public string ConnectionStatus
         {
             get => _connectionStatus;
-            set
-            {
-                _connectionStatus = value;
-                NotifyOfPropertyChange(nameof(ConnectionStatus));
-            }
+            set => Set<string>(ref _connectionStatus, value, nameof(ConnectionStatus));
         }
 
         public string Message
         {
             get => _message;
-            set
-            {
-                _message = value;
-                NotifyOfPropertyChange(nameof(Message));
-            }
+            set => Set<string>(ref _connectionStatus, value, nameof(Message));
         }
 
         public bool CanConnect(string iP, string port)

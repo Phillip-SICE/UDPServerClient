@@ -22,21 +22,13 @@ namespace UDPCommGUI.ViewModels
         public string Username
         {
             get => _username;
-            set
-            {
-                _username = value;
-                NotifyOfPropertyChange(nameof(Username));
-            }
+            set => Set<string>(ref _username, value, nameof(Username));
         }
 
         public string Password
         {
             get => _password;
-            set
-            {
-                _password = value;
-                NotifyOfPropertyChange(nameof(Password));
-            }
+            set => Set<string>(ref _password, value, nameof(Password));
         }
 
         public bool CanLogin(string username, string password)
