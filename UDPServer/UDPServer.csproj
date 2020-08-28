@@ -67,19 +67,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
+    <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Events\ServerCommandEvent.cs" />
+    <Compile Include="Events\ServerStatusChangedEvent.cs" />
+    <Compile Include="ViewModels\ShellViewModel.cs" />
+    <Compile Include="ViewModels\StringToColorConverter.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="IServerInterface.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
+    <Page Include="Views\ShellView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MessageReceivedEventArgs.cs" />
@@ -112,10 +113,17 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\UDPClientGUI\UDPCommGUI.csproj">
+      <Project>{493ecc58-0c9c-4c49-8530-8669f01ec853}</Project>
+      <Name>UDPCommGUI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UDPDataManger\UDPDataManger.csproj">
       <Project>{cefd75b5-dacc-4b8f-a95b-9ad6bbff7cb6}</Project>
       <Name>UDPDataManger</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Model\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

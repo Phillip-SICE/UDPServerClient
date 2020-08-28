@@ -1,17 +1,30 @@
-﻿using System.Net;
+﻿using Caliburn.Micro;
+using System.Collections.Generic;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using UDPCommGUI;
 
 namespace Sice.PoC.UDPCommGUI
 {
-    class SiceUDPClient : IClientInterface
+    class SiceUDPClient : IClientInterface, IHandle<ClientCommandEvent>
     {
-
+        private Dictionary<ClientCommandEvent.Command, System.Action> handler = new Dictionary<ClientCommandEvent.Command, System.Action>();
         private UdpClient client;
-    
-        public SiceUDPClient()
+        private IEventAggregator _eventAggregator;
+
+
+        public SiceUDPClient(IEventAggregator eventAggregator)
         {
+            this._eventAggregator = eventAggregator;
+            this._eventAggregator.Subscribe(this);
             this.ConnectionStatus = false;
+
+            
+            handler.Add(ClientCommandEvent.Command.Connect, Connect);
+            handler.Add(ClientCommandEvent.Command.Disconnect, Disconnect);
+            handler.Add(ClientCommandEvent.Command.SendMessage, SendMessage);
+            
         }
 
         public IPAddress ConnectionIP { get; set; }
@@ -27,6 +40,8 @@ namespace Sice.PoC.UDPCommGUI
             this.client = new UdpClient();
             client.Connect(ConnectionIP, ConnectionPort);
             this.ConnectionStatus = true;
+            this._eventAggregator.PublishOnUIThread(new ClientStatusChangedEvent(ConnectionStatus));
+
         }
 
         public void Disconnect()
@@ -35,6 +50,7 @@ namespace Sice.PoC.UDPCommGUI
             {
                 client.Close();
                 this.ConnectionStatus = false;
+                this._eventAggregator.PublishOnUIThread(new ClientStatusChangedEvent(ConnectionStatus));
             }
         }
 
@@ -51,5 +67,16 @@ namespace Sice.PoC.UDPCommGUI
         {
             client.Dispose();
         }
+
+        public void Handle(ClientCommandEvent Command)
+        {
+
+            if (!handler.ContainsKey(Command.ClientCommand)) return;
+            InputMessage = Command.Message;
+            ConnectionIP = Command.ConnectionIP;
+            ConnectionPort = Command.ConnectionPort;
+            handler[Command.ClientCommand]();
+        }
+
     }
 }
