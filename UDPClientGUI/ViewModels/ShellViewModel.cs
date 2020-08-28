@@ -8,15 +8,17 @@ namespace UDPCommGUI.ViewModels
     class ShellViewModel : Screen, IHandle<ClientStatusChangedEvent>
     {
         private readonly IEventAggregator _eventAggregator;
+        private readonly LoginViewModel _loginViewModel;
         private string _iP;
         private string _port;
         private string _message;
         private string _connectionStatus;
 
-        public ShellViewModel(IEventAggregator eventAggregator, SiceUDPClient siceUDPClient)
+        public ShellViewModel(IEventAggregator eventAggregator, SiceUDPClient siceUDPClient, LoginViewModel loginViewModel)
         {
             _eventAggregator = eventAggregator;
             _eventAggregator.Subscribe(this);
+            _loginViewModel = loginViewModel;
             IP = ConfigurationManager.AppSettings["IPAddress"];
             Port = ConfigurationManager.AppSettings["PortNumber"];
             ConnectionStatus = "Disconnected";
@@ -25,54 +27,32 @@ namespace UDPCommGUI.ViewModels
         public string IP
         {
             get => _iP;
-            set
-            {
-                _iP = value;
-                NotifyOfPropertyChange(nameof(IP));
-            }
+            set => Set<string>(ref _iP, value, nameof(IP));
         }
 
         public string Port
         {
             get => _port;
-            set
-            {
-                _port = value;
-                NotifyOfPropertyChange(nameof(Port));
-            }
+            set => Set<string>(ref _port, value, nameof(Port));
         }
 
         public string ConnectionStatus
         {
             get => _connectionStatus;
-            set
-            {
-                _connectionStatus = value;
-                NotifyOfPropertyChange(nameof(ConnectionStatus));
-            }
+            set => Set<string>(ref _connectionStatus, value, nameof(ConnectionStatus));
         }
 
         public string Message
         {
             get => _message;
-            set
-            {
-                _message = value;
-                NotifyOfPropertyChange(nameof(Message));
-            }
+            set => Set<string>(ref _connectionStatus, value, nameof(Message));
         }
 
         public bool CanConnect(string iP, string port)
         {
-<<<<<<< Updated upstream
-            if (!IPAddress.TryParse(iP, out IPAddress parseIP)) return false;
-            if (!int.TryParse(port, out int parsePort)) return false;
-            return true;
-=======
             var validIP = IPAddress.TryParse(iP, out IPAddress parseIP);
             var validPort = int.TryParse(port, out int parsePort);
             return validIP && validPort;
->>>>>>> Stashed changes
         }
 
         public void Connect(string iP, string port)
@@ -85,16 +65,17 @@ namespace UDPCommGUI.ViewModels
             _eventAggregator.PublishOnBackgroundThread(new ClientCommandEvent(ClientCommandEvent.Command.Disconnect, IP, Port));
         }
 
+        public void Login()
+        {
+            IWindowManager manager = new WindowManager();
+            manager.ShowDialog(_loginViewModel, null, null);
+        }
+
         public bool CanSend(string message)
         {
-<<<<<<< Updated upstream
-            if (ConnectionStatus == "Connected") return !(message is null || message == "");
-            return false;
-=======
-            var Connected = (ConnectionStatus == "Connected");
-            var EmptyMessage = string.IsNullOrEmpty(message);
-            return (Connected && !EmptyMessage);
->>>>>>> Stashed changes
+            var connected = (ConnectionStatus == "Connected");
+            var emptyMessage = string.IsNullOrEmpty(message);
+            return (connected && !emptyMessage);
         }
 
         public void Send(string message)

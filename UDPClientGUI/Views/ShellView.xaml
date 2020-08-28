@@ -9,8 +9,18 @@
         Title="UDP client" Height="315" Width="468.616">
     <Window.Resources>
         <local1:StringToColorConverter x:Key="StringToColorConverter" />
+        <Style TargetType="{x:Type TextBlock}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ConnectionStatus}" Value="Connected">
+                    <Setter Property="Foreground" Value="Green" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ConnectionStatus}" Value="Disconnected">
+                    <Setter Property="Foreground" Value="Red" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
-    <Grid Margin="0,0,30,21">
+    <Grid Margin="0,0,2,-1">
         <TextBox x:Name="IP" HorizontalAlignment="Left" Height="43" Margin="98,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="161" />
         <Button x:Name="Connect" Content="Connect" HorizontalAlignment="Left" Height="43" Margin="287,75,0,0" VerticalAlignment="Top" Width="117" />
         <Label Content="IP" HorizontalAlignment="Left" Margin="27,34,0,0" VerticalAlignment="Top"/>
@@ -20,8 +30,7 @@
         <Label Content="Message&#xA;" HorizontalAlignment="Left" Margin="27,192,0,0" VerticalAlignment="Top"/>
         <Button x:Name="Send" Content="Send" HorizontalAlignment="Left" Height="43" Margin="287,191,0,0" VerticalAlignment="Top" Width="117" />
         <Button x:Name="Disconnect" Content="Disconnect" HorizontalAlignment="Left" Height="43" Margin="287,133,0,0" VerticalAlignment="Top" Width="117" RenderTransformOrigin="0.535,1.6"/>
-        <TextBlock x:Name="ConnectionStatus" Foreground="{Binding ConnectionStatus, Converter={StaticResource StringToColorConverter}}"  HorizontalAlignment="Left" Margin="332,34,0,0" TextWrapping="Wrap" Text="Disconencted" VerticalAlignment="Top"/>
-
-
+        <TextBlock x:Name="ConnectionStatus" Text="{Binding ConnectionStatus}"  HorizontalAlignment="Left" Margin="332,34,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <Button x:Name="Login" Content="Login" HorizontalAlignment="Left" Margin="374,255,0,0" VerticalAlignment="Top" Width="75" />
     </Grid>
 </Window>

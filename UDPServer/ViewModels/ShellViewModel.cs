@@ -27,30 +27,19 @@ namespace UDPServer.ViewModels
         public string IP
         {
             get => _iP;
-            set {
-                _iP = value;
-                NotifyOfPropertyChange(nameof(IP));
-            }
+            set => Set<string>(ref _iP, value, nameof(IP));
         }
 
         public string Port
         {
             get => _port;
-            set
-            {
-                _port = value;
-                NotifyOfPropertyChange(nameof(Port));
-            }
+            set => Set<string>(ref _port, value, nameof(Port));
         }
 
         public string ListeningStatus
         {
             get => _listeningStatus;
-            set
-            {
-                _listeningStatus = value;
-                NotifyOfPropertyChange(nameof(ListeningStatus));
-            }
+            set => Set<string>(ref _listeningStatus, value, nameof(ListeningStatus));
         }
 
         public string ControllerInfo
@@ -67,9 +56,9 @@ namespace UDPServer.ViewModels
         
         public bool CanConnect(string iP, string port)
         {
-            if (!IPAddress.TryParse(iP, out IPAddress parseIP)) return false;
-            if (!int.TryParse(port, out int parsePort)) return false;
-            return true;
+            var validIP = IPAddress.TryParse(iP, out IPAddress parseIP);
+            var validPort = int.TryParse(port, out int parsePort);
+            return validIP && validPort;
         }
 
         public void Connect(string iP, string port)

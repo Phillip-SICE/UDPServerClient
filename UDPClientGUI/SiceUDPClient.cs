@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -8,15 +9,22 @@ namespace Sice.PoC.UDPCommGUI
 {
     class SiceUDPClient : IClientInterface, IHandle<ClientCommandEvent>
     {
-
+        private Dictionary<ClientCommandEvent.Command, System.Action> handler = new Dictionary<ClientCommandEvent.Command, System.Action>();
         private UdpClient client;
         private IEventAggregator _eventAggregator;
-    
+
+
         public SiceUDPClient(IEventAggregator eventAggregator)
         {
             this._eventAggregator = eventAggregator;
             this._eventAggregator.Subscribe(this);
             this.ConnectionStatus = false;
+
+            
+            handler.Add(ClientCommandEvent.Command.Connect, Connect);
+            handler.Add(ClientCommandEvent.Command.Disconnect, Disconnect);
+            handler.Add(ClientCommandEvent.Command.SendMessage, SendMessage);
+            
         }
 
         public IPAddress ConnectionIP { get; set; }
@@ -62,32 +70,13 @@ namespace Sice.PoC.UDPCommGUI
 
         public void Handle(ClientCommandEvent Command)
         {
+
+            if (!handler.ContainsKey(Command.ClientCommand)) return;
+            InputMessage = Command.Message;
             ConnectionIP = Command.ConnectionIP;
             ConnectionPort = Command.ConnectionPort;
-<<<<<<< Updated upstream
-            if (Command.ClientCommand == ClientCommandEvent.Command.Connect) {
-                Connect();
-                return;
-            }
-            if (Command.ClientCommand == ClientCommandEvent.Command.Disconnect) {
-                Disconnect();
-                return;
-            }
-            if (Command.ClientCommand == ClientCommandEvent.Command.SendMessage)
-=======
             handler[Command.ClientCommand]();
         }
 
-        public void Handle(ClientLoginEvent loginEvent)
-        {
-            string loginJSON = Json.Encode(loginEvent);
-            if (ConnectionStatus)
->>>>>>> Stashed changes
-            {
-                InputMessage = Command.Message;
-                SendMessage();
-                return;
-            }
-        }
     }
 }

@@ -1,4 +1,9 @@
 ﻿using Caliburn.Micro;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace UDPCommGUI.ViewModels
 {
@@ -17,34 +22,38 @@ namespace UDPCommGUI.ViewModels
         public string Username
         {
             get => _username;
-            set
-            {
-                _username = value;
-                NotifyOfPropertyChange(nameof(Username));
-            }
+            set => Set<string>(ref _username, value, nameof(Username));
         }
 
         public string Password
         {
             get => _password;
-            set
-            {
-                _password = value;
-                NotifyOfPropertyChange(nameof(Password));
-            }
+            set => Set<string>(ref _password, value, nameof(Password));
         }
 
         public bool CanLogin(string username, string password)
         {
-            if (username is null || username == "") return false;
-            if (password is null || password == "") return false;
+            if(string.IsNullOrEmpty(username.Trim()) || string.IsNullOrEmpty(password.Trim()))
+            {
+                return false;
+            }
             return true;
         }
 
         public void Login(string username, string password)
         {
-            _eventAggregator.PublishOnBackgroundThread(new ClientLoginEvent(Username, password));
-            this.TryClose();
+            _eventAggregator.PublishOnBackgroundThread(new ClientLoginSignUpEvent(ClientLoginSignUpEvent.Type.Login, Username, Password));
         }
+
+        public bool CanSignUp(string username, string password)
+        {
+            return CanLogin(username, password);
+        }
+
+        public void SignUp(string username, string password)
+        {
+            _eventAggregator.PublishOnBackgroundThread(new ClientLoginSignUpEvent(ClientLoginSignUpEvent.Type.SignUp, Username, Password));
+        }
+
     }
 }

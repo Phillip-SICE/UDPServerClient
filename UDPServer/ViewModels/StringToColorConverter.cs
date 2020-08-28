@@ -1,11 +1,6 @@
-﻿using System;
-using System.Globalization;
-using System.Windows.Data;
-using System.Windows.Media;
-
-namespace UDPServer.ViewModels
+﻿namespace UDPServer.ViewModels
 {
-    class StringToColorConverter : IValueConverter
+    class StringToColorConverter : UDPCommGUI.ViewModels.StringToColorConverter
     {
 <<<<<<< Updated upstream
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

@@ -17,10 +17,10 @@ namespace UDPCommGUI
                 ConnectionPort = parsePort;
             }
         }
-        public Command ClientCommand { get; private set; }
-        public IPAddress ConnectionIP { get; private set; }
-        public int ConnectionPort { get; private set; }
-        public string Message { get; private set; }
+        public readonly Command ClientCommand;
+        public readonly IPAddress ConnectionIP;
+        public readonly int ConnectionPort;
+        public readonly string Message;
 
         public enum Command
         {

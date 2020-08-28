@@ -7,6 +7,6 @@
             this.Status = status;
         }
 
-        public bool Status { get; private set; }
+        public readonly bool Status;
     }
 }
