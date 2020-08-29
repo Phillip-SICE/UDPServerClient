@@ -17,5 +17,6 @@ namespace Sice.PoC.UDPServer
         public string ReceivedTime { get; set; }
         public string Source { get; set; }
         public string Message { get; set; }        
+        public int ControllerID { get; set; }
     }
 }

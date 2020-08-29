@@ -4,10 +4,11 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using UDPCommGUI;
+using Newtonsoft.Json;
 
 namespace Sice.PoC.UDPCommGUI
 {
-    class SiceUDPClient : IClientInterface, IHandle<ClientCommandEvent>
+    class SiceUDPClient : IClientInterface, IHandle<ClientCommandEvent>, IHandle<ClientLoginEvent>
     {
         private Dictionary<ClientCommandEvent.Command, System.Action> handler = new Dictionary<ClientCommandEvent.Command, System.Action>();
         private UdpClient client;
@@ -78,5 +79,11 @@ namespace Sice.PoC.UDPCommGUI
             handler[Command.ClientCommand]();
         }
 
+        public void Handle(ClientLoginEvent message)
+        {
+            if (!ConnectionStatus) return;
+            var loginMessage = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(message));
+            client.Send(loginMessage, loginMessage.Length);
+        }
     }
 }

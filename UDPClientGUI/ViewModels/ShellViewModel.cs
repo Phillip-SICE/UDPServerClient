@@ -45,7 +45,7 @@ namespace UDPCommGUI.ViewModels
         public string Message
         {
             get => _message;
-            set => Set<string>(ref _connectionStatus, value, nameof(Message));
+            set => Set<string>(ref _message, value, nameof(Message));
         }
 
         public bool CanConnect(string iP, string port)
