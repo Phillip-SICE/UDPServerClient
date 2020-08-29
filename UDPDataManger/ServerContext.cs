@@ -9,5 +9,7 @@ namespace Sice.PoC.UDPServer
             Database.SetInitializer(new CreateDatabaseIfNotExists<ServerContext>());
         }
         public DbSet<ReceivedMessage> ReceivedMessages { get; set; }
+        public DbSet<Controller> Controllers { get; set; }
+        public DbSet<Login> Login { get; set; }
     }
 }

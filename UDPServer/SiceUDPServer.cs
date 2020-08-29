@@ -6,6 +6,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UDPServer;
+using System.Linq;
+using UDPCommGUI;
+using Newtonsoft.Json;
 
 namespace Sice.PoC.UDPServer
 {
@@ -21,6 +24,9 @@ namespace Sice.PoC.UDPServer
         public bool ConnectionStatus { get; set; }
         public ReceivedMessage ReceivedMessage { get; set; }
         public int DataAvailable => client.Available;
+        public bool HasLoggedIn { get; set; }
+        public int ConnectedControllerID { get; set; }
+        public string ConnectedControllerInfo { get; set; }
 
         public SiceUDPServer(IEventAggregator eventAggregator)
         {
@@ -38,7 +44,7 @@ namespace Sice.PoC.UDPServer
                 token = source.Token;
                 Task.Run(() => Listen(), token);
                 this.ConnectionStatus = true;
-                eventAggregator.PublishOnUIThread(new ServerStatusChangedEvent(true));
+                eventAggregator.PublishOnUIThread(new ServerStatusChangedEvent(ServerStatus.Connected));
             }
         }
 
@@ -46,9 +52,16 @@ namespace Sice.PoC.UDPServer
         {
             while (true)
             {
-                if (DataAvailable != 0)
+                if (ConnectionStatus && DataAvailable != 0)
                 {
-                    await GetData();
+                    if(HasLoggedIn)
+                    {
+                        await GetData();
+                    }
+                    else
+                    {
+                        await GetLogin();
+                    }
                 }
             }
         }
@@ -57,10 +70,10 @@ namespace Sice.PoC.UDPServer
         {
             if(ConnectionStatus)
             {
-                client.Close();
                 this.ConnectionStatus = false;
+                client.Close();
                 source.Cancel();
-                eventAggregator.PublishOnUIThread(new ServerStatusChangedEvent(false));
+                eventAggregator.PublishOnUIThread(new ServerStatusChangedEvent(ServerStatus.Stopped));
             }
         }
 
@@ -69,12 +82,57 @@ namespace Sice.PoC.UDPServer
             var remoteIpEndPoint = new IPEndPoint(ConnectionIP, ConnectionPort);
             var data = await client.ReceiveAsync();
             ReceivedData = Encoding.ASCII.GetString(data.Buffer);
-            ReceivedMessage = new ReceivedMessage(DateTime.Now.ToString(), data.RemoteEndPoint.Address.ToString(), ReceivedData);
+            ReceivedMessage = new ReceivedMessage(DateTime.Now.ToString(), data.RemoteEndPoint.Address.ToString(), ReceivedData, ConnectedControllerID);
             this.eventAggregator.PublishOnUIThread(ReceivedMessage);
             using (var db = new ServerContext())
             {
                 db.ReceivedMessages.Add(ReceivedMessage);
                 await db.SaveChangesAsync();
+            }
+        }
+
+        public async Task GetLogin()
+        {
+            var remoteIpEndPoint = new IPEndPoint(ConnectionIP, ConnectionPort);
+            var data = await client.ReceiveAsync();
+            ReceivedData = Encoding.ASCII.GetString(data.Buffer);
+            //var credential = JsonSerializer.Deserialize(ReceivedData, ClientLoginEvent, default);
+            var credential = JsonConvert.DeserializeObject<ClientLoginEvent>(ReceivedData);
+            string username = credential.Username;
+            string password = credential.Password;
+            using (var db = new ServerContext())
+            {
+                var query = from login in db.Login
+                            where login.Username == username
+                            select login;
+                foreach (var items in query)
+                {
+                    if(items.Username == username && BCrypt.Net.BCrypt.Verify(password, items.PasswordHash))
+                    {
+                        HasLoggedIn = true;
+                        ConnectedControllerID = items.ControllerID;
+                        GetControllerInfo(ConnectedControllerID);
+                        eventAggregator.PublishOnUIThread(new ServerStatusChangedEvent(ServerStatus.Listening, ConnectedControllerInfo));
+                    }
+                }
+            }
+        }
+
+        public void GetControllerInfo(int controllerID)
+        {
+            using (var db = new ServerContext())
+            {
+                var query = from controller in db.Controllers
+                            where controller.ControllerID == controllerID
+                            select controller;
+                foreach (var item in query)
+                {
+                    if(item.ControllerID == controllerID)
+                    {
+                        this.ConnectedControllerInfo = item.ControllerInfo;
+                    }
+                }
+
             }
         }
 

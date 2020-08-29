@@ -20,5 +20,6 @@
         <Button x:Name="Clear" Content="Clear" HorizontalAlignment="Left" Margin="464,79,0,0" VerticalAlignment="Top" Width="96" Height="26"/>
         <ListBox x:Name="ReeivedMessages" ItemsSource="{Binding ReceivedMessages}" HorizontalAlignment="Left" Height="134" Margin="30,139,0,0" VerticalAlignment="Top" Width="530"/>
         <TextBlock Name="ListeningStatus" Foreground="{Binding ListeningStatus, Converter={StaticResource StringToColorConverter}}" HorizontalAlignment="Left" Margin="511,25,0,0" TextWrapping="Wrap" Text="Stopped" VerticalAlignment="Top"/>
+        <TextBlock x:Name="ControllerInfo" HorizontalAlignment="Left" Margin="511,46,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"/>
     </Grid>
 </Window>

@@ -2,10 +2,12 @@
 {
     public class ServerStatusChangedEvent
     {
-        public ServerStatusChangedEvent(bool status)
+        public ServerStatusChangedEvent(ServerStatus status, string ControllerInfo = "")
         {
             this.Status = status;
+            this.ControllerInfo = ControllerInfo;
         }
-        public bool Status { get; private set; }
+        public readonly ServerStatus Status;
+        public readonly string ControllerInfo;
     }
 }
