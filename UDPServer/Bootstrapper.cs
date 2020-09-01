@@ -23,6 +23,8 @@ namespace UDPServer
             _container.Singleton<IWindowManager, WindowManager>();
             _container.PerRequest<ShellViewModel>();
             _container.Singleton<SiceUDPServer>();
+            _container.PerRequest<ServerContextRepo>();
+            _container.PerRequest<ServerContext>();
         }
 
         protected override void OnStartup(object sender, StartupEventArgs e)
