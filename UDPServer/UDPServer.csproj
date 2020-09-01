@@ -75,6 +75,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="DBActions\Dbaction.cs" />
     <Compile Include="Events\ServerCommandEvent.cs" />
     <Compile Include="Events\ServerStatus.cs" />
     <Compile Include="Events\ServerStatusChangedEvent.cs" />
@@ -83,6 +84,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
+    <Compile Include="ServerContextRepo.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="ViewModels\StringToColorConverter.cs" />
     <Compile Include="App.xaml.cs">

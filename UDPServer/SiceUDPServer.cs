@@ -27,10 +27,12 @@ namespace Sice.PoC.UDPServer
         public bool HasLoggedIn { get; set; }
         public int ConnectedControllerID { get; set; }
         public string ConnectedControllerInfo { get; set; }
+        public ServerContextRepo ContextRepo { get; set; }
 
-        public SiceUDPServer(IEventAggregator eventAggregator)
+        public SiceUDPServer(IEventAggregator eventAggregator, ServerContextRepo contextRepo)
         {
             this.ConnectionStatus = false;
+            this.ContextRepo = contextRepo;
             this.eventAggregator = eventAggregator;
             eventAggregator.Subscribe(this);
         }
@@ -84,11 +86,7 @@ namespace Sice.PoC.UDPServer
             ReceivedData = Encoding.ASCII.GetString(data.Buffer);
             ReceivedMessage = new ReceivedMessage(DateTime.Now.ToString(), data.RemoteEndPoint.Address.ToString(), ReceivedData, ConnectedControllerID);
             this.eventAggregator.PublishOnUIThread(ReceivedMessage);
-            using (var db = new ServerContext())
-            {
-                db.ReceivedMessages.Add(ReceivedMessage);
-                await db.SaveChangesAsync();
-            }
+            await ContextRepo.AddReceivedMessage(ReceivedMessage);
         }
 
         public async Task GetLogin()
@@ -96,42 +94,17 @@ namespace Sice.PoC.UDPServer
             var remoteIpEndPoint = new IPEndPoint(ConnectionIP, ConnectionPort);
             var data = await client.ReceiveAsync();
             ReceivedData = Encoding.ASCII.GetString(data.Buffer);
-            //var credential = JsonSerializer.Deserialize(ReceivedData, ClientLoginEvent, default);
             var credential = JsonConvert.DeserializeObject<ClientLoginEvent>(ReceivedData);
-            string username = credential.Username;
-            string password = credential.Password;
-            using (var db = new ServerContext())
-            {
-                var query = from login in db.Login
-                            where login.Username == username
-                            select login;
-                foreach (var items in query)
-                {
-                    if(items.Username == username && BCrypt.Net.BCrypt.Verify(password, items.PasswordHash))
-                    {
-                        HasLoggedIn = true;
-                        ConnectedControllerID = items.ControllerID;
-                        GetControllerInfo(ConnectedControllerID);
-                        eventAggregator.PublishOnUIThread(new ServerStatusChangedEvent(ServerStatus.Listening, ConnectedControllerInfo));
-                    }
-                }
-            }
-        }
 
-        public void GetControllerInfo(int controllerID)
-        {
-            using (var db = new ServerContext())
+            try
             {
-                var query = from controller in db.Controllers
-                            where controller.ControllerID == controllerID
-                            select controller;
-                foreach (var item in query)
-                {
-                    if(item.ControllerID == controllerID)
-                    {
-                        this.ConnectedControllerInfo = item.ControllerInfo;
-                    }
-                }
+                this.ConnectedControllerID = ContextRepo.GetControllerIDFromLogin(credential);
+                this.ConnectedControllerInfo = ContextRepo.GetControllerInfo(ConnectedControllerID);
+                eventAggregator.PublishOnUIThread(new ServerStatusChangedEvent(ServerStatus.Listening, ConnectedControllerInfo));
+                HasLoggedIn = true;
+            }
+            catch
+            {
 
             }
         }
